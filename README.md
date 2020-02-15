@@ -32,17 +32,23 @@ Eskimos had so much the only thing to know about in drifts, snow that people hav
 "You know," said Arthur, "it's at the bowl of complete fools."
 ```
 
-## Setup and Sample Usage
+## Setup and sample usage
 
 ### Setup
 
 The only real requirement is [jsonpickle](https://jsonpickle.github.io/), but feel free to use the `requirements.txt` file if you're feeling saucy.
 
-### Generate a Brain
+### Generate a brain
 
 You'll find some sample brains in the appropriately named directory, but if you want to rebuild them, let's build a brain out of some Hitchhiker's quotes:
 
 `./ircawp-learn.py sample_input/hitch.txt > hitch-brain.json`
+
+#### Two brains are better than one
+
+If you have an existing brain you'd like to merge the new corpus into:
+
+`./ircawp-learn.py sample_input/hitch.txt some-ol-brain.json > twobrainstogether.json`
 
 ### Emit some comedy
 
@@ -52,8 +58,17 @@ Now, just use:
 
 ...and out comes some "real woke shit that shatters through our warped looking glass". (Thanks, 1ndgfl0.)
 
+## Notes
+
+-   The 'brain' format is just an ugly, impossibly unoptimized json dump of a memory structure. It compresses pretty well, though.
+-   I'll probably make a few tweaks to this to give a bit more coherency to the sentences being generated.
+-   My ultimate goal is to feed this into a Slack bot. Not that you asked, but I figure it'd be nice to disclose my motivations.
+-   Python is not my primary tongue, so forgive any relgious violations I may have committed against Guido's snake-language.
+
 ## "ircawp"?
 
 Don't ask.
 
 ![](https://media.giphy.com/media/2Z6sjWggCaDXa/giphy.gif)
+
+2020-02-15
