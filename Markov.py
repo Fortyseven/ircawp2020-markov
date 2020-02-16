@@ -1,19 +1,26 @@
 from random import randrange
+import jsonpickle
+
+#################################################################
 
 
-class MarkovRoot():
+class Root():
     def __init__(self):
         self.words = {}
 
+#################################################################
 
-class MarkovNode():
+
+class Node():
     def __init__(self, start_word=False, end_word=False):
         self.start = start_word
         self.end = end_word
-        self.next_words = {}
+        self.next = {}
+
+#################################################################
 
 
-class MarkovPhrase():
+class Phrase():
     def __init__(self, brain):
         self.brain = brain
 
@@ -32,8 +39,8 @@ class MarkovPhrase():
             next_candidates = []
 
             for word in self.brain.words:
-                if (word in self.brain.words[cur_word].next_words.keys()):
-                    count = self.brain.words[cur_word].next_words[word]
+                if (word in self.brain.words[cur_word].next.keys()):
+                    count = self.brain.words[cur_word].next[word]
                     for i in range(count):
                         next_candidates.append(word)
 
@@ -58,17 +65,27 @@ class MarkovPhrase():
 
         return sentence
 
+#################################################################
 
-def MarkovBuildBrain(source_text, existing_brain=None):
-    file = open(source_text, "r")
-    corpus = file.readlines()
 
-    if not existing_brain:
-        brain = MarkovRoot()
-    else:
-        brain = existing_brain
+class Brain():
+    def __init__(self, existing_brain=None):
+        if (existing_brain):
+            self.brain = brain
+        else:
+            self.brain = Root()
 
-    for line in corpus:
+    def loadExistingBrain(self, brain_path):
+        f = open(brain_path, "r")
+        self.brain = jsonpickle.decode("".join(f.readlines()))
+
+    def compileCorupus(self, source_text):
+        file = open(source_text, "r")
+        corpus = file.readlines()
+        for line in corpus:
+            self.processLine(line)
+
+    def processLine(self, line):
         line_pieces = line.split(' ')
         is_start = True
         is_end = False
@@ -81,16 +98,20 @@ def MarkovBuildBrain(source_text, existing_brain=None):
             else:
                 line_pieces[1] = line_pieces[1].strip()
 
-            if line_pieces[0] not in brain.words:
-                brain.words[line_pieces[0]] = MarkovNode(is_start, is_end)
+            if line_pieces[0] not in self.brain.words:
+                self.brain.words[line_pieces[0]] = Node(is_start, is_end)
 
             is_start = False
 
             if not is_end:
-                if line_pieces[1] not in brain.words[line_pieces[0]].next_words:
-                    brain.words[line_pieces[0]].next_words[line_pieces[1]] = 1
+                if line_pieces[1] not in self.brain.words[line_pieces[0]].next:
+                    self.brain.words[line_pieces[0]
+                                     ].next[line_pieces[1]] = 1
                 else:
-                    brain.words[line_pieces[0]].next_words[line_pieces[1]] += 1
+                    self.brain.words[line_pieces[0]
+                                     ].next[line_pieces[1]] += 1
 
             line_pieces.pop(0)
-    return brain
+
+    def toJSON(self):
+        return jsonpickle.encode(self.brain)
