@@ -19,5 +19,5 @@ if __name__ == "__main__":
 
     brain = jsonpickle.decode("".join(brainfile.readlines()))
 
-    markov = MarkovPhrase(brain)
+    markov = Phrase(brain)
     print(markov.create())

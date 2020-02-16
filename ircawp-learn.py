@@ -2,8 +2,7 @@
 
 import sys
 import os
-from Markov import *
-import jsonpickle
+import Markov
 
 
 if __name__ == "__main__":
@@ -16,7 +15,7 @@ if __name__ == "__main__":
         print("Can't find source corpus {}".format(sys.argv[1]))
         sys.exit(-1)
 
-    existing_brain = None
+    brain = Markov.Brain()
 
     # If specified, load the existing brain and get it ready to merge
     if (len(sys.argv) == 3):
@@ -24,9 +23,7 @@ if __name__ == "__main__":
             print("Can't find brain '{}' to merge with".format(sys.argv[2]))
             sys.exit(-1)
 
-        existing_brain_f = open(sys.argv[2], "r")
-        existing_brain = jsonpickle.decode(
-            "".join(existing_brain_f.readlines()))
+        brain.loadExistingBrain(sys.argv[2])
 
-    brain = MarkovBuildBrain(sys.argv[1], existing_brain)
-    print(jsonpickle.encode(brain))
+    brain.compileCorupus(sys.argv[1])
+    print(brain.toJSON())
